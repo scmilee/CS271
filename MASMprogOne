@@ -1,0 +1,133 @@
+;TITLE Program One     (programOne.asm)
+
+; Author: Dylan Drudge
+; CS271 / Program one                 Date: 07/01/2017
+; Description: Program one solution, displaying my name and program title and has the
+;			   user input two numbers and perform math on them.
+
+INCLUDE Irvine32.inc
+
+; (insert constant definitions here)
+
+.data
+prgrmrIntro		BYTE	"Hi, my name is Dylan Drudge and this is Program One for CS271!",0
+prgrmInstruct	BYTE	"Please input the first positive integer for calculation: ",0
+prgrmInstruct2	BYTE	"Please input the second positive integer for calculation: ",0
+userInput1		DWORD	?		;to be input by user
+userInput2		DWORD	?		;to be input by user
+inputSum		DWORD	?		;to be calculated with inputs
+inputDiff		DWORD	?		;to be calculated with inputs
+inputProd		DWORD	?		;to be calculated with inputs	
+inputQuo		DWORD	?		;to be calculated with inputs
+inputRem		DWORD	?		;to be calculated with inputs
+outputSum		BYTE	"The sum of your integers is : ",0
+outputDiff		BYTE	"The difference of your integers is : ",0
+outputProd		BYTE	"The product of your integers is : ",0
+outputQuo		BYTE	"The quotient of your integers is : ",0
+outputRem		BYTE	" with a remainder of ",0
+termMessage		BYTE	"Thank you for using programOne, Goodbye!",0
+
+.code
+main PROC
+
+;Intro Programmer
+	
+	mov		edx, OFFSET prgrmrIntro
+	call	WriteString
+	call	CrLF
+	call	CrLF
+
+;Display instructions and prompt entry for two inputs
+	
+	mov		edx,OFFSET prgrmInstruct
+	call	WriteString
+	call	ReadInt
+	call	CrLF
+	mov		userInput1, eax
+	mov		edx,OFFSET prgrmInstruct2
+	call	WriteString
+	call	ReadInt
+	call	CrLF
+	mov		userInput2, eax
+	call	CrLF
+	call	CrLF
+	
+;Do math with said integers
+	;product
+	mov		eax, userInput1
+	mov		ebx, userInput2
+	mul		ebx
+	mov		inputProd, eax
+	
+	;division and remainder
+	mov		eax, userInput1
+	mov		ebx, userInput2
+	xor		edx,edx
+	div		ebx
+	mov		inputQuo, eax
+	mov		inputRem, edx
+	
+	;sum
+	mov		eax, userInput1
+	mov		ebx, userInput2
+	add		eax,ebx
+	mov		inputSum, eax
+	
+	;difference
+	mov		eax, userInput1
+	mov		ebx, userInput2
+	sub		eax,ebx
+	mov		inputDiff, eax
+	
+;Display the numbers then terminate
+	
+	;output sum
+	mov		edx,OFFSET outputSum
+	call	WriteString
+	mov		eax, inputSum
+	call	WriteInt
+	call	CrLF
+	call	CrLF
+	
+	;output difference
+	mov		edx,OFFSET outputDiff
+	call	WriteString
+	mov		eax, inputDiff
+	call	WriteInt
+	call	CrLF
+	call	CrLF
+	
+	;output product
+	mov		edx, OFFSET outputProd
+	call	WriteString
+	mov		eax, inputProd
+	call	WriteInt
+	call	CrLF
+	call	CrLF
+	
+	;output quotient and remainder
+	mov		edx,OFFSET outputQuo
+	call	WriteString
+	mov		eax, inputQuo
+	call	WriteInt
+	mov		edx,OFFSET outputRem
+	call	WriteString
+	mov		eax, inputRem
+	call	WriteInt
+
+	;spacing/formating
+	call	CrLF
+	call	CrLF
+	
+	;goodbye message
+	mov		edx, OFFSET termMessage
+	call	WriteString
+	call	CrLF
+	call	CrLF
+
+	exit	; exit to operating system
+main ENDP
+
+; (insert additional procedures here)
+
+END main
