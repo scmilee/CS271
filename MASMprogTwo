@@ -1,0 +1,183 @@
+;TITLE Program Two     (programTwo.asm)
+
+; Author: Dylan Drudge
+; CS271 / Program two                Date: 07/11/2017
+; Description: Program two solution, displaying my name and program title and has the
+;			   user input one number for validation and to calculate said number using fibanacci sequences .
+
+INCLUDE Irvine32.inc
+
+.const
+upperLim		DWORD	46																							;the constant cap of fib numbers
+
+.data
+max = 80
+prgrmrIntro		BYTE			"Hi, my name is Dylan Drudge and this is the Fibonacci program for CS271!",0
+prgrmXtra		BYTE			"**** In this program i worked on the aligning of columns extra credit, it's not perfect but it looks a lot better than normal!",0
+prgrmInstruct1	BYTE			"Please enter your name:",0
+userName		BYTE max + 1 DUP (?)																				;their name restricted to 80 characters
+greeting		BYTE			"Hello, ",0
+prgrmInstruct2	BYTE			"Please input the amount of fibonacci numbers you would like to see up to 46: ",0
+userInput		DWORD	?					 																		;the number of fibb #'s theyd like to see
+spacer9			BYTE			"                 ",0
+spacer8			BYTE			"                ",0
+spacer7			BYTE			"               ",0
+spacer6			BYTE			"              ",0
+spacer5			BYTE			"             ",0
+spacer4			BYTE			"            ",0
+spacer3			BYTE			"           ",0
+spacer2			BYTE			"          ",0																			;space spacer
+spacer1			BYTE			"         ",0
+goodBye1		BYTE			"Thanks for using FibbMaster3000, see you next time!!",0
+goodBye2		BYTE			"Please enter a valid number next time, GoodBye.",0
+
+.code
+main proc
+
+;intro programmer
+	
+	mov		edx, OFFSET prgrmrIntro
+	call	WriteString
+	call	CrLF
+	call	CrLF
+	mov		edx, OFFSET	prgrmXtra
+	call	WriteString
+	call	CrLF
+	call	CrLF
+
+;display instructions to input name and then greet them
+				
+	mov		edx,OFFSET prgrmInstruct1
+	call	WriteString
+	mov		ecx, 80
+	mov		edx,OFFSET username
+	call	ReadString
+	call	CrLF
+	call	CrLF
+	
+	mov		edx, OFFSET greeting
+	call	WriteString
+	mov		edx,OFFSET username
+	call	WriteString
+	call	CrLF
+
+;display instructions to input amount of Fib #'s
+restart:	
+	mov		edx, OFFSET	prgrmInstruct2
+	call	WriteString
+
+
+;check Fib input and prepare loop before jump
+	
+	
+	call	ReadInt
+	call	CrLF
+	cmp		eax,upperlim
+	jg		restart				;reset encounte if too high of an input
+	mov		userInput, eax
+	mov		ecx, userInput		;loads the counter
+	dec		ecx
+	mov		eax,1
+	mov		ebx,1				;loaded first fibs a and b
+	mov		edx,1
+	call	WriteInt
+	mov		edx,OFFSET spacer8
+	call	WriteString
+	
+	mov		ebp,2				;ebp will be used to help format
+	jle		l1	
+
+;fib math loop outputting every iteration and a format catch on the top of it
+	
+l1:
+	cmp		ebp,5
+	jle		fibloop				;will jump if its not time for another line
+	call	Crlf
+	mov		ebp,1
+
+fibloop:
+	
+	mov		edx, eax 
+    add		edx, ebx			;adding a and b
+    mov		eax, ebx			;losing old a for old b
+    mov		ebx, edx			;new b replaces old b
+	call	WriteInt			;prints a number				
+	inc		ebp
+	
+	cmp		edx, 9				;extra credit formatting
+	jg		s1
+	mov		edx,OFFSET spacer9
+	call	WriteString			;puts space between elements
+	loop	l1					;loop it for X mroe times
+s1:
+	cmp		edx,99
+	jg		s2
+	mov		edx,OFFSET spacer8
+	call	WriteString
+	loop	l1					;loop it for X mroe times
+s2:
+	cmp		edx,999
+	jg		s3
+	mov		edx,OFFSET spacer7
+	call	WriteString
+	loop	l1					;loop it for X mroe times
+s3:
+	cmp		edx,9999
+	jg		s4
+	mov		edx,OFFSET spacer6
+	call	WriteString
+	loop	l1					;loop it for X mroe times
+s4:
+	cmp		edx,99999
+	jg		s5
+	mov		edx,OFFSET spacer5
+	call	WriteString
+	loop	l1					;loop it for X mroe times
+s5:
+	cmp		edx,999999
+	jg		s6
+	mov		edx,OFFSET spacer4
+	call	WriteString
+	dec		ecx
+	cmp		ecx,userInput
+	jle		l1					;start jumping due to loop range
+s6:
+	cmp		edx,9999999
+	jg		s7
+	mov		edx,OFFSET spacer3
+	call	WriteString
+	dec		ecx
+	cmp		ecx,userInput
+	jle		l1					;start jumping due to loop range
+s7:
+	cmp		edx,99999999
+	jg		s8
+	mov		edx,OFFSET spacer2
+	call	WriteString
+	dec		ecx
+	cmp		ecx,userInput
+	jle		l1					;start jumping due to loop range
+s8:
+	cmp		edx,999999999
+	jg		s9
+	mov		edx,OFFSET spacer1
+	call	WriteString
+	dec		ecx
+	cmp		ecx,userInput
+	jle		l1					;start jumping due to loop range
+s9:
+
+
+;goodbye and jump to exit point
+	call	CrLF
+	call	CrLF
+	mov		eax,userInput
+	mov		edx, OFFSET goodbye1
+	call	WriteString
+	cmp		eax,upperLim
+	call	CrLF
+
+
+	invoke ExitProcess,0
+main endp
+end main
